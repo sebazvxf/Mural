@@ -23,23 +23,64 @@
         .cuadro:hover {
             cursor: pointer;
         }
+        .color-picker {
+            margin: 20px 0;
+        }
     </style>
 </head>
 <body>
     <h1>Mural Interactivo</h1>
+
+    <!-- Selección de color -->
+    <div class="color-picker">
+        <label for="color">Elige un color: </label>
+        <input type="color" id="color" value="#ff0000">
+    </div>
+
     <div class="mural" id="mural"></div>
+    <div id="message"></div>
 
     <script>
-        // Crear el mural de 10x10 cuadros
         const mural = document.getElementById('mural');
+        const colorPicker = document.getElementById('color');
+        const message = document.getElementById('message');
+        let colorSeleccionado = '#ff0000';
+
+        // Crear el mural de 10x10 cuadros
         for (let i = 0; i < 100; i++) {
             const cuadro = document.createElement('div');
             cuadro.classList.add('cuadro');
-            cuadro.addEventListener('click', () => {
-                cuadro.style.backgroundColor = 'red'; // Cambia el color al hacer clic
-            });
+            cuadro.addEventListener('click', () => pintarCuadro(cuadro));
             mural.appendChild(cuadro);
         }
+
+        // Función para pintar el cuadro
+        function pintarCuadro(cuadro) {
+            const tiempoUltimaPintura = localStorage.getItem('ultimoTiempo');
+            const ahora = new Date().getTime();
+
+            // Verificar si han pasado 5 minutos
+            if (tiempoUltimaPintura && ahora - tiempoUltimaPintura < 300000) {
+                const tiempoRestante = 300000 - (ahora - tiempoUltimaPintura);
+                const minutosRestantes = Math.ceil(tiempoRestante / 60000);
+                message.innerHTML = `¡Espera ${minutosRestantes} minutos para pintar otra vez!`;
+                return;
+            }
+
+            // Pintar el cuadro y actualizar el tiempo
+            cuadro.style.backgroundColor = colorSeleccionado;
+            localStorage.setItem('ultimoTiempo', ahora);  // Guardar la hora de la última acción
+
+            message.innerHTML = `Cuadro pintado en color ${colorSeleccionado}.`;
+
+            // Guardar el mural de forma visible para todos los usuarios
+            // Este paso lo haremos más tarde con Firebase (te explicaré cómo hacerlo).
+        }
+
+        // Actualizar el color seleccionado
+        colorPicker.addEventListener('input', (e) => {
+            colorSeleccionado = e.target.value;
+        });
     </script>
 </body>
 </html>
