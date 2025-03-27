@@ -5,26 +5,75 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mural Interactivo</title>
     <style>
+        /* Estilos generales */
         body {
             font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin: 20px;
+        }
+
+        /* Estilo del mural */
         .mural {
             display: grid;
-            grid-template-columns: repeat(10, 50px);
-            grid-template-rows: repeat(10, 50px);
-            gap: 2px;
+            grid-template-columns: repeat(50, 20px); /* Aumenta la cantidad de columnas */
+            grid-template-rows: repeat(50, 20px);    /* Aumenta la cantidad de filas */
+            gap: 1px;
+            margin-bottom: 20px;
+            border: 5px solid #333;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
         }
+
         .cuadro {
-            width: 50px;
-            height: 50px;
+            width: 20px;
+            height: 20px;
             border: 1px solid #ddd;
             background-color: #fff;
+            transition: background-color 0.3s ease;
         }
+
         .cuadro:hover {
             cursor: pointer;
+            background-color: #e0e0e0;
         }
+
+        /* Estilo de la selección de color */
         .color-picker {
-            margin: 20px 0;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .color-picker input {
+            width: 60px;
+            height: 30px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        /* Estilo del mensaje de espera */
+        #message {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+
+        /* Estilo de la sección de información adicional */
+        .info {
+            text-align: center;
+            font-size: 14px;
+            color: #555;
+            margin-top: 30px;
         }
     </style>
 </head>
@@ -37,8 +86,17 @@
         <input type="color" id="color" value="#ff0000">
     </div>
 
+    <!-- Mural -->
     <div class="mural" id="mural"></div>
+
+    <!-- Mensaje de espera -->
     <div id="message"></div>
+
+    <!-- Información adicional -->
+    <div class="info">
+        <p><strong>Instrucciones:</strong> Haz clic en los cuadros para pintarlos. Solo puedes pintar un cuadro cada 5 minutos.</p>
+        <p>Elige el color que deseas usar antes de pintar. ¡Diviértete creando tu obra colectiva!</p>
+    </div>
 
     <script>
         const mural = document.getElementById('mural');
@@ -46,8 +104,8 @@
         const message = document.getElementById('message');
         let colorSeleccionado = '#ff0000';
 
-        // Crear el mural de 10x10 cuadros
-        for (let i = 0; i < 100; i++) {
+        // Crear el mural de 50x50 cuadros (más grande que antes)
+        for (let i = 0; i < 2500; i++) {
             const cuadro = document.createElement('div');
             cuadro.classList.add('cuadro');
             cuadro.addEventListener('click', () => pintarCuadro(cuadro));
@@ -72,9 +130,6 @@
             localStorage.setItem('ultimoTiempo', ahora);  // Guardar la hora de la última acción
 
             message.innerHTML = `Cuadro pintado en color ${colorSeleccionado}.`;
-
-            // Guardar el mural de forma visible para todos los usuarios
-            // Este paso lo haremos más tarde con Firebase (te explicaré cómo hacerlo).
         }
 
         // Actualizar el color seleccionado
